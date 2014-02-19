@@ -1,0 +1,27 @@
+#!/sbin/sh
+#
+#
+
+binfile=/etc/init.d/proclog.pl
+pidfile=/var/run/proclog.pid
+
+case "$1" in
+'start')
+	if [ -f $binfile ]; then
+		echo ' process log service starting.'
+		$binfile >/dev/msglog 2>&1 &	
+	fi
+	;;
+
+'stop')
+	if [ -f $pidfile ]; then	
+		logpid=`cat $pidfile`
+		[ "$logpid" -gt 0 ] && kill -15 $logpid
+	fi
+	;;
+
+*)
+	echo "Usage: $0 { start | stop }"
+	exit 1
+	;;
+esac
