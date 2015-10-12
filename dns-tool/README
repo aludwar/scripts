@@ -1,0 +1,37 @@
+IDC – Lab DNS Tool
+
+Summary:
+
+In an effort both to alleviate workload on DC Core Services and allow customers a quicker return time on IP address allocation, we’ve developed a tool that will allocate IPs and update DNS automatically, for lab environment only.  We will provide this tool to our customers with the hope that they find it quick and easy to use, and allow them a more timely response when needing IPs allocated, and DNS updated accordingly.
+
+Where is the tool?
+
+The tool lives on <name server>, in the /var/named directory.  There are actually two tools which customers can make use of.  Their use is described below:
+
+showipassignments.pl  - This tool will cycle through all the IPs in DNS that the runtime user has access to.  It will display any assigned IPs, and also will report the available IPs to the user.  Essentially, this tool will help users decide what IPs are available, so they can decide how to allocate them.
+
+updatedns.pl - This tool handles the updating and deletion of DNS records and their IP assignments.  This tool will guide the user through their entries with prompts, and requires the user to manually test their changes after usage.
+
+You will need to login as yourself (not root or an application account) and run these tools with sudo.
+
+Tool maintenance:
+
+The tool makes use of a few flat files that store the user to group assignments, and group to IP assignments.  There’s also a logfile which keeps track of the changes made.
+
+All on <name server>:
+
+/etc/named.users - This file assigns users to groups.  It’s used in determining which group has access to particular IPs.  File syntax is important!  The file looks like this:
+
+inf:user1,user2,user3
+apps:user4,user5,user6
+
+/etc/named.ips - This file assigns groups to IP ranges.  It’s used in determining which groups are authorized to assign particular IPs.  File syntax is important!  The file looks like this:
+
+192.168.0.arpa:30..39,50..59:team1
+192.168.0.arpa:90..99,120..150:team2
+10.0.0.arpa:120..130:team1
+10.0.0.arpa:130..150:team2
+
+/etc/named.log - This is the logfile that’s used to track the changes made. 
+
+DC Core Services will manage the /etc/named.ips and /etc/named.users files.  In the event that a customer uses up all their assigned IPs, DC Core Services will assign them additional IPs.  Also, they’ll add or remove users from the groups as they change.

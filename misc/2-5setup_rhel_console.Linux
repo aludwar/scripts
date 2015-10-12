@@ -1,0 +1,65 @@
+#!/bin/sh
+####################################################################
+#
+#  Name:        SHAW_base/2-5setup_rhel_console.Linux
+#
+#-----------------------------------------------------------------
+#
+# Change log:
+#
+# When          Who             Comments
+# ----          ---             --------
+# 01-10-2010	Andrew Ludwar	Creation
+#
+
+JS_display "Configuring RHEL console"
+
+## Add console configuration to kernel line in /etc/grub.conf
+##
+GRUB_CONF=${ROOTDIR}/etc/grub.conf
+GRUB_CONF_BAK=${ROOTDIR}/etc/grub.conf.bak
+
+/bin/cp ${GRUB_CONF} ${GRUB_CONF_BAK} 
+/bin/rm ${GRUB_CONF}
+/bin/touch ${GRUB_CONF}
+
+while read line;
+do
+if [[ "$line" =~ ^[kernel] ]]; then
+	echo $line " console=tty1 console=ttyS0,9600" >> ${GRUB_CONF};
+else
+	echo $line >> ${GRUB_CONF};
+fi
+done < ${GRUB_CONF_BAK}
+
+## Append serial teletype to /etc/securetty
+##
+SECURE_TTY=${ROOTDIR}/etc/securetty
+
+echo "ttyS0" >> ${SECURE_TTY}
+
+
+## Change default runlevel to full multiuser mode, not boot into X11
+##
+INIT_CONF=${ROOTDIR}/etc/inittab
+INIT_CONF_BAK=${ROOTDIR}/etc/inittab.bak
+
+/bin/cp ${INIT_CONF} ${INIT_CONF_BAK}
+/bin/rm ${INIT_CONF}
+/bin/touch ${INIT_CONF}
+
+while read line;
+do
+if [[ "$line" == "id:5:initdefault:" ]]; then
+	echo "id:3:initdefault:" >> ${INIT_CONF};
+
+elif [[ "$line" == "1:2345:respawn:/sbin/mingetty tty1" ]]; then
+	echo "co:2345:respawn:/sbin/agetty 9600 ttyS0 vt100" >> ${INIT_CONF};
+	echo $line >> ${INIT_CONF};
+
+else
+	echo $line >> ${INIT_CONF};
+fi
+done < ${INIT_CONF_BAK}
+
+JS_display "RHEL console configuration completed."
