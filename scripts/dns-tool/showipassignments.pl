@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 ##################################################################################
 #
-# Author:       Andrew Ludwar - DC Core Services [andrew.ludwar@shaw.ca]
+# Author:       Andrew Ludwar - DC Core Services [andrew.ludwar@sjrb.ca]
 # Date:         March 25th, 2011
 # Description:  This script is intended to automate making DNS entries in the IDC
 #               lab environment.  This script assumes a novice user, prompts for
@@ -17,7 +17,8 @@
 #               responsible for maintaining their assigned IP space.  This includes
 #               any DNS cleanup.
 #
-#  Please report any bugs to Andrew Ludwar [andrew.ludwar@shaw.ca]
+#  Please report any issues to DC - Core Services [shawcrtidccore@sjrb.ca]
+#  Please report any bugs to Andrew Ludwar [andrew.ludwar@sjrb.ca]
 #
 ##################################################################################
 # User          # Comment                                       # Date
